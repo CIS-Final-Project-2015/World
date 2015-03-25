@@ -15,6 +15,11 @@ class dunWorld(object):
             self.dungeon[i].dungeonForm = form
             if self.dungeon[i].dungeonForm.count('1') == 1:
                 self.dungeon[i].room = True
+            try:
+                if self.dungeon[i].dungeonForm[4]: #Check if square is final square
+                    self.dungeon[i].final = True
+            except IndexError:
+                pass
     def possibleMoves(self, currentLocation):
         string = "You can move:\n"
         if self.dungeon[currentLocation].dungeonForm[0] == '1':
@@ -53,14 +58,16 @@ class dunWorld(object):
         
 class dungeonLocation(object):
     dungeonForm = []
-    room = None
-            #Defines if a square is a room
-            #For example: [N, E, S, W] = [0,0,1,0] means the only exit is south, making it a room.
-
+    room = None #Defines if a square is a room
+                #For example: [N, E, S, W] = [0,0,1,0] means the only exit is south, making it a room.
+    final = False
+            
+#Main
 def launchDungeon():
-    input('You are in an eerie dungeon...')
+    print('You are in an eerie dungeon...')
     currentLocation = 0
     dungeonWorld = dunWorld(currentLocation)
+    ################# Simple UI ##################
     inDungeon = True
     moveWhere = None
     while inDungeon == True:
@@ -72,12 +79,22 @@ def launchDungeon():
             currentLocation = dungeonWorld.MovePlayerS(currentLocation)
         elif moveWhere == 'w':
             currentLocation = dungeonWorld.MovePlayerW(currentLocation)
-        elif moveWhere == 'q':
-            print('Goodbye')
-            inDungeon = False
+        #elif moveWhere == 'q': Un-comment this to add a quit function that'll take you out of the dungeon
+            #print('Goodbye')   and straight back where you were in the world
+            #inDungeon = False
+            #break
+        elif moveWhere == None:
+            pass
         else:
             print('Unknown Command')
-        print('You are on sqaure', currentLocation)
+        #print('You are on sqaure', currentLocation)
+        if dungeonWorld.dungeon[currentLocation].final == True:
+            print('You are in the exit square!')
+            decide = input('Would you like to leave the dungeon:')
+            if decide == 'y':
+                currentLocation = random.randrange(35)
+                inDungeon = False
+                return currentLocation
         print(dungeonWorld.possibleMoves(currentLocation))
         moveWhere = input('Where would you like to move: ')
 
