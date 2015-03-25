@@ -1,5 +1,6 @@
 #Test 1
 import random
+import DungeonWorld
 
 class lsForBiomes():
     def selectBiome(self): # Assigns random biome for location
@@ -86,7 +87,7 @@ class World(object):
         
     def createDungeon(self): # Create the dungeon by replacing a random sqaure
         dungeonLs = ['Dungeon Descrip 1', 'Dungeon Descrip 2']
-        dungeonIndex = random.randint(1,35)
+        dungeonIndex = 5#random.randint(1,35)
         self.map[dungeonIndex].BIOME = 9
         self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
         
@@ -154,4 +155,8 @@ while moveWhere != 'q':
     print(world.map[currentLocation])
     print('You are on sqaure', currentLocation)
     print()
+    if world.map[currentLocation].BIOME == 9:
+        decide = input('A dungeon appears before you! Would you like to enter it:')
+        if decide == 'y':
+            DungeonWorld.launchDungeon()
     moveWhere = input('Where would you like to move: ')
