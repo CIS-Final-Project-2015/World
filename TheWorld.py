@@ -1,5 +1,6 @@
 #Test 1
 import random
+import DungeonWorld
 
 class lsForBiomes():
     def selectBiome(self): # Assigns random biome for location
@@ -90,7 +91,7 @@ class World(object):
         self.map[dungeonIndex].BIOME = 9
         self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
         
-    def createCity(self): # Same as dungeon
+    def createCity(self): # Same as Create dungeon
         CityLs = ['Urban Descrip 1', 'Urban Descrip 2']
         cityIndex = random.randint(1,35)
         self.map[CityIndex].BIOME = 1
@@ -122,17 +123,29 @@ class World(object):
         else:
             currentLocation = currentLocation - 1
             return currentLocation
-    def printLocation(self, currentLocation):
-        return currentLocation
-        
-    def getPositionBiome(self, currentLocation): # Retrieves biome of current location
-        return self.map[currentLocation]
-
-    
+    def getSurroundings(self, currentLocation):
+        string = "******* Your surroundings *****"
+        string += "\nYou are in a " + self.map[currentLocation].biomeDic[self.map[currentLocation].BIOME] + " biome."
+        string += "\n\nYou can see: "
+        if (currentLocation - 6) > 0: #N
+            string += "\n\nTo your north, you see:\n\t"
+            string += self.map[currentLocation - 6].DESCRIP
+        if (currentLocation + 1) % 6 > 0: #E
+            string += "\n\nTo your east, you see:\n\t"
+            string += self.map[currentLocation + 1].DESCRIP
+        if (currentLocation + 6) < 35: #S
+            string += "\n\nTo your south, you see:\n\t"
+            string += self.map[currentLocation + 6].DESCRIP
+        if (currentLocation % 6) > 0: #W
+            string += "\n\nTo your west, you see:\n\t"
+            string += self.map[currentLocation - 1] .DESCRIP
+        string += "\n********************************\n"
+        return string
 currentLocation = 0
 world = World(currentLocation)
 world.createDungeon()
-
+############# Simple UI ##############
+print(world.getSurroundings(currentLocation))
 moveWhere = input('Where would you like to move: ')
 while moveWhere != 'q':
     if moveWhere == 'n':
@@ -149,9 +162,12 @@ while moveWhere != 'q':
         print(world.getPositionBiome(currentLocation))
     elif moveWhere == 'q':
         print('Goodbye')
+        break
     else:
         print('Unknown Command')
-    print(world.map[currentLocation])
-    print('You are on sqaure', currentLocation)
-    print()
+    if world.map[currentLocation].BIOME == 9:
+        decide = input('A dungeon appears before you! Would you like to enter it:')
+        if decide == 'y':
+            currentLocation = DungeonWorld.launchDungeon()
+    print(world.getSurroundings(currentLocation))
     moveWhere = input('Where would you like to move: ')
