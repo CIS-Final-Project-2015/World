@@ -104,8 +104,8 @@ class World(object):
     def __createCity(self): # Same as Create dungeon
         CityLs = ['Urban Descrip 1', 'Urban Descrip 2']
         cityIndex = random.randint(1,35)
-        self.map[CityIndex].BIOME = 1
-        self.map[CityIndex].DESCRIP = random.choice(CityLs)
+        self.map[cityIndex].BIOME = 1
+        self.map[cityIndex].DESCRIP = random.choice(CityLs)
 
     def movePlayerN(self, currentLocation): # Move player (N)orth
         if (currentLocation - 6) < 0: # Check to move up
