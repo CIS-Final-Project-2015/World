@@ -97,8 +97,6 @@ def launchDungeon():
     ################# Simple UI ##################
     inDungeon = True
     moveWhere = None
-    for i in range(len(dungeonWorld.dungeon)):
-        print(dungeonWorld.dungeon[i].door)
     while inDungeon == True:
         if moveWhere == 'n':
             currentLocation = dungeonWorld.MovePlayerN(currentLocation)

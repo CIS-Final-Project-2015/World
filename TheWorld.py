@@ -82,16 +82,26 @@ class World(object):
     def __init__(self, currentLocation):
         self.map = [Location() for i in range(36)] # initializes a list of locations, [Location 1, L2, L3, etc..]
         self.currentLocation = currentLocation
+        self.__createDungeon()
+        count = 0
+        for i in range(len(self.map)): # Check if any cities were generated
+            if self.map[i].BIOME == 1:
+                count += 1
+        if count == 0: # Create a city if none was already made.
+            self.__createCity() 
+        while self.map[0].BIOME == 2: #So you can't spawn on water
+            self.BIOME = lsForBiomes.selectBiome(self) # Assign this instance of location's biome
+            self.DESCRIP = lsForBiomes.selectDescrip(self, self.BIOME)
         #for i in range(len(self.map)):
             #print(self.map[i]) #PRINT ALL BIOMES
         
-    def createDungeon(self): # Create the dungeon by replacing a random sqaure
+    def __createDungeon(self): # Create the dungeon by replacing a random sqaure
         dungeonLs = ['Dungeon Descrip 1', 'Dungeon Descrip 2']
         dungeonIndex = random.randint(1,35)
         self.map[dungeonIndex].BIOME = 9
         self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
         
-    def createCity(self): # Same as Create dungeon
+    def __createCity(self): # Same as Create dungeon
         CityLs = ['Urban Descrip 1', 'Urban Descrip 2']
         cityIndex = random.randint(1,35)
         self.map[CityIndex].BIOME = 1
@@ -146,13 +156,12 @@ class World(object):
     def returnBiome(self, currentLocation):
         return self.map[currentLocation.BIOME]
 
-
+#Main
 currentLocation = 0 # you will need this for the world to function
-world = World(currentLocation)# maybe remove this
-world.createDungeon()
+world = World(currentLocation)# If your making your own main you will need to remove this
+
 
 ############# Simple UI ##############
-#You might want to remove everything below this line if your starting to make the game
 print(world.getSurroundings(currentLocation))
 moveWhere = input('Where would you like to move: ')
 while moveWhere != 'q':
