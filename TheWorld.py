@@ -3,6 +3,16 @@ import random
 import DungeonWorld
 
 class lsForBiomes():
+    urbanLs = ['Urban Descrip 1', 'Urban Descrip 2']
+    aquaticLs = ['Aquatic Descrip 2', 'Aquatic Descrip 2']
+    marshLs = ['Marsh Descrip 1', 'Marsh Descrip 2']
+    desertLs = ['Desert Descrip 1', 'Desert Descrip 2']
+    mountainLs = ['Mountain Descrip 1', 'Mountain Descrip 2']
+    hillLs = ['Hill Descrip 1', 'Hill Descrip 2']
+    forestLs = ['Forst Descrip 1','Forest Descrip 2']
+    plainLs = ['Plains Descrip 1', 'Plains Descrip 2']
+    dungeonLs = ['Dungeon Descrip 1', 'Dungeon Descrip 2']
+    
     def selectBiome(self): # Assigns random biome for location
         the_number = random.randint(1,101)
         if the_number <= 3:
@@ -24,33 +34,22 @@ class lsForBiomes():
         return biomeType
     
     def selectDescrip(self, biomeType): # Assigns random description from a list according to its current biome
-        
-        urbanLs = ['Urban Descrip 1', 'Urban Descrip 2']
-        aquaticLs = ['Aquatic Descrip 2', 'Aquatic Descrip 2']
-        marshLs = ['Marsh Descrip 1', 'Marsh Descrip 2']
-        desertLs = ['Desert Descrip 1', 'Desert Descrip 2']
-        mountainLs = ['Mountain Descrip 1', 'Mountain Descrip 2']
-        hillsLs = ['Hill Descrip 1', 'Hill Descrip 2']
-        forestLs = ['Forst Descrip 1','Forest Descrip 2']
-        plainsLs = ['Plains Descrip 1', 'Plains Descrip 2']
-        dungeonLs = ['Dungeon Descrip 1', 'Dungeon Descrip 2']
-        
         if biomeType == 1:
-            biomeDescrip = random.choice(urbanLs)
+            biomeDescrip = random.choice(lsForBiomes.urbanLs)
         elif biomeType == 2:
-            biomeDescrip = random.choice(aquaticLs)
+            biomeDescrip = random.choice(lsForBiomes.aquaticLs)
         elif biomeType == 3:
-            biomeDescrip = random.choice(marshLs)
+            biomeDescrip = random.choice(lsForBiomes.marshLs)
         elif biomeType == 4:
-            biomeDescrip = random.choice(desertLs)
+            biomeDescrip = random.choice(lsForBiomes.desertLs)
         elif biomeType == 5:
-            biomeDescrip = random.choice(mountainLs)
+            biomeDescrip = random.choice(lsForBiomes.mountainLs)
         elif biomeType == 6:
-            biomeDescrip = random.choice(hillsLs)
+            biomeDescrip = random.choice(lsForBiomes.hillLs)
         elif biomeType == 7:
-            biomeDescrip = random.choice(forestLs)
+            biomeDescrip = random.choice(lsForBiomes.forestLs)
         else:
-            biomeDescrip = random.choice(plainsLs)
+            biomeDescrip = random.choice(lsForBiomes.plainLs)
         return biomeDescrip
 
 class Location(object):
@@ -83,12 +82,8 @@ class World(object):
         self.map = [Location() for i in range(36)] # initializes a list of locations, [Location 1, L2, L3, etc..]
         self.currentLocation = currentLocation
         self.__createDungeon()
-        count = 0
-        for i in range(len(self.map)): # Check if any cities were generated
-            if self.map[i].BIOME == 1:
-                count += 1
-        if count == 0: # Create a city if none was already made.
-            self.__createCity() 
+        # Create a city if none was already made.
+        self.__createCity() 
         while self.map[0].BIOME == 2: #So you can't spawn on water
             self.BIOME = lsForBiomes.selectBiome(self) # Assign this instance of location's biome
             self.DESCRIP = lsForBiomes.selectDescrip(self, self.BIOME)
@@ -96,14 +91,21 @@ class World(object):
             #print(self.map[i]) #PRINT ALL BIOMES
         
     def __createDungeon(self): # Create the dungeon by replacing a random sqaure
-        dungeonLs = ['Dungeon Descrip 1', 'Dungeon Descrip 2']
+        dungeonLs = lsForBiomes.dungeonLs
         dungeonIndex = random.randint(1,35)
         self.map[dungeonIndex].BIOME = 9
         self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
         
     def __createCity(self): # Same as Create dungeon
-        CityLs = ['Urban Descrip 1', 'Urban Descrip 2']
-        cityIndex = random.randint(1,35)
+        count = 0
+        for i in range(len(self.map)): # Check if any cities were generated
+            if self.map[i].BIOME == 1:
+                count += 1
+        if count == 0:
+            CityLs = lsForBiomes.urbanLs
+            cityIndex = random.randint(1,35)
+        while self.map[cityIndex].BIOME == 9: # So it doesn't replace a dungeon
+            cityIndex = random.randint(1,35)
         self.map[cityIndex].BIOME = 1
         self.map[cityIndex].DESCRIP = random.choice(CityLs)
 
