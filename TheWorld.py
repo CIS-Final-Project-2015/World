@@ -123,28 +123,36 @@ class World(object):
         else:
             currentLocation = currentLocation - 1
             return currentLocation
+        
     def getSurroundings(self, currentLocation):
         string = "******* Your surroundings *****"
         string += "\nYou are in a " + self.map[currentLocation].biomeDic[self.map[currentLocation].BIOME] + " biome."
         string += "\n\nYou can see: "
         if (currentLocation - 6) > 0: #N
-            string += "\n\nTo your north, you see:\n\t"
+            string += "\n\nNorth:\n\t"
             string += self.map[currentLocation - 6].DESCRIP
         if (currentLocation + 1) % 6 > 0: #E
-            string += "\n\nTo your east, you see:\n\t"
+            string += "\n\nEast:\n\t"
             string += self.map[currentLocation + 1].DESCRIP
         if (currentLocation + 6) < 35: #S
-            string += "\n\nTo your south, you see:\n\t"
+            string += "\n\nSouth:\n\t"
             string += self.map[currentLocation + 6].DESCRIP
         if (currentLocation % 6) > 0: #W
-            string += "\n\nTo your west, you see:\n\t"
+            string += "\n\nWest:\n\t"
             string += self.map[currentLocation - 1] .DESCRIP
         string += "\n********************************\n"
         return string
-currentLocation = 0
-world = World(currentLocation)
+    
+    def returnBiome(self, currentLocation):
+        return self.map[currentLocation.BIOME]
+
+
+currentLocation = 0 # you will need this for the world to function
+world = World(currentLocation)# maybe remove this
 world.createDungeon()
+
 ############# Simple UI ##############
+#You might want to remove everything below this line if your starting to make the game
 print(world.getSurroundings(currentLocation))
 moveWhere = input('Where would you like to move: ')
 while moveWhere != 'q':
@@ -159,15 +167,16 @@ while moveWhere != 'q':
     elif moveWhere == 'l':
         print(str(world.printLocation(currentLocation)))
     elif moveWhere == 'b':
-        print(world.getPositionBiome(currentLocation))
+        print(world.returnBiome(currentLocation))
     elif moveWhere == 'q':
         print('Goodbye')
         break
     else:
-        print('Unknown Command')
+        print('Unknown Command\n')
     if world.map[currentLocation].BIOME == 9:
         decide = input('A dungeon appears before you! Would you like to enter it:')
         if decide == 'y':
             currentLocation = DungeonWorld.launchDungeon()
     print(world.getSurroundings(currentLocation))
+    print()
     moveWhere = input('Where would you like to move: ')
