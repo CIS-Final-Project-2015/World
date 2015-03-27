@@ -13,13 +13,18 @@ class dunWorld(object):
             form = form.strip()
             form = form.split(',')
             self.dungeon[i].dungeonForm = form
-            if self.dungeon[i].dungeonForm.count('1') == 1:
+            if self.dungeon[i].dungeonForm.count('1') == 1: #Tells if a square is a room or not
                 self.dungeon[i].room = True
             try:
                 if self.dungeon[i].dungeonForm[4]: #Check if square is final square
                     self.dungeon[i].final = True
             except IndexError:
                 pass
+        dungeonFile.close()
+        self.makeDoors()
+        
+##############################################################
+        
     def possibleMoves(self, currentLocation):
         string = "You can move:\n"
         if self.dungeon[currentLocation].dungeonForm[0] == '1':
@@ -56,17 +61,39 @@ class dunWorld(object):
         else:
             return currentLocation
         
+##########################################################
+
+    def getRooms(self): # This will return a list of what squares are rooms
+        rooms = []
+        for i in range(len(self.dungeon)):
+            if self.dungeon[i].room == True:
+                rooms.append(i)
+        return rooms 
+
+    def makeDoors(self):
+        rooms = self.getRooms()
+        numDoors = random.randrange(len(rooms))
+        templist = rooms
+        for i in range(numDoors):
+            choice = random.choice(templist)
+            self.dungeon[choice].door = True
+            templist.remove(choice)
+
+    def returnDoor(self, currentLocation):
+        return self.dungeon[currentLocation].door #True = a door is there/ False = No door
+
 class dungeonLocation(object):
-    dungeonForm = []
-    room = None #Defines if a square is a room
-                #For example: [N, E, S, W] = [0,0,1,0] means the only exit is south, making it a room.
+    dungeonForm = []        #[N,E,S,W] a list of exits.
+    room = None             #Defines if a square is a room
+    door = False            
     final = False
-            
+    
 #Main
 def launchDungeon():
     print('You are in an eerie dungeon...')
     currentLocation = 0
     dungeonWorld = dunWorld(currentLocation)
+    
     ################# Simple UI ##################
     inDungeon = True
     moveWhere = None
