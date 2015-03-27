@@ -21,7 +21,7 @@ class dunWorld(object):
             except IndexError:
                 pass
         dungeonFile.close()
-        self.makeDoors()
+        self.__makeDoors()
         
 ##############################################################
         
@@ -70,7 +70,7 @@ class dunWorld(object):
                 rooms.append(i)
         return rooms 
 
-    def makeDoors(self):
+    def __makeDoors(self):
         rooms = self.getRooms()
         numDoors = random.randrange(len(rooms))
         templist = rooms
@@ -85,7 +85,8 @@ class dunWorld(object):
 class dungeonLocation(object):
     dungeonForm = []        #[N,E,S,W] a list of exits.
     room = None             #Defines if a square is a room
-    door = False            
+    door = False            #If there is a door in this location
+    locked = True           #This will have to be toggled when a door is locked/unlocked
     final = False
     
 #Main
