@@ -80,15 +80,64 @@ class dunWorld(object):
             templist.remove(choice)
 
     def returnDoor(self, currentLocation):
-        return self.dungeon[currentLocation].door #True = a door is there/ False = No door
-
+        roomAtrib = []
+        if self.dungeon[currentLocation].room == True:
+            if self.dungeon[currentLocation].door == True:
+                roomAtrib.append(1)
+            else:
+                roomArtib.append(0)
+            if self.dungeon[currentLocation].locked == True:
+                roomAtrib.append(1)
+            else:
+                roomAtrib.append(0)
+        else:
+            print("ERROR CURRENT LOCATION NOT A ROOM")
+            
+        return roomAtrib
+    def unlockDoor(self, currentLocation): #To unlock a door at your current position
+        if self.dungeon[currentLocation].door == True:
+            if self.dungeon[currentLocation].locked == True:
+                self.dungeon[currentLocation].locked = False
+        else:
+            print('ERROR NO DOOR PRESENT OR DOOR IS ALREADY UNLOCKED')
+        
+                        
+    
 class dungeonLocation(object):
     dungeonForm = []        #[N,E,S,W] a list of exits.
     room = None             #Defines if a square is a room
     door = False            #If there is a door in this location
     locked = True           #This will have to be toggled when a door is locked/unlocked
-    final = False
-    
+    final = False           #If this square is the final square
+
+    def __str__(self):
+        string = "Dungeon Form: "
+        string += ','.join(self.dungeonForm)
+        string += '\n'
+        
+        string += "Room: "
+        if self.room == None:
+            string += "None"
+        else: 
+            string += "True"
+        
+        string += "\nDoor: "
+        if self.door == True:
+            string += "True\n"
+            string += "Locked: "
+            if self.locked == True:
+                string += "True\n"
+            else:
+                string += "False\n"
+        else:
+            string += "False\n"
+            
+        string += "Final Square: "
+        if self.final == True:
+            string += "True\n"
+        else:
+            string += "False\n"
+        return string
 #Main
 def launchDungeon():
     print('You are in an eerie dungeon...')
@@ -124,6 +173,7 @@ def launchDungeon():
                 inDungeon = False
                 return currentLocation
         print(dungeonWorld.possibleMoves(currentLocation))
+        #print(dungeonWorld.dungeon[currentLocation]) Uncomment this to enable debug
         moveWhere = input('Where would you like to move: ')
 
 

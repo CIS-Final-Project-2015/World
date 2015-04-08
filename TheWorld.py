@@ -89,7 +89,7 @@ class World(object):
             self.DESCRIP = lsForBiomes.selectDescrip(self, self.BIOME)
         #for i in range(len(self.map)):
             #print(self.map[i]) #PRINT ALL BIOMES
-        
+
     def __createDungeon(self): # Create the dungeon by replacing a random sqaure
         dungeonLs = lsForBiomes.dungeonLs
         dungeonIndex = random.randint(1,35)
@@ -101,11 +101,11 @@ class World(object):
         for i in range(len(self.map)): # Check if any cities were generated
             if self.map[i].BIOME == 1:
                 count += 1
+        CityLs = lsForBiomes.urbanLs
+        cityIndex = random.randint(1,35)
         if count == 0:
-            CityLs = lsForBiomes.urbanLs
-            cityIndex = random.randint(1,35)
-        while self.map[cityIndex].BIOME == 9: # So it doesn't replace a dungeon
-            cityIndex = random.randint(1,35)
+            while self.map[cityIndex].BIOME == 9: # So it doesn't replace a dungeon
+                cityIndex = random.randint(1,35)
         self.map[cityIndex].BIOME = 1
         self.map[cityIndex].DESCRIP = random.choice(CityLs)
 
