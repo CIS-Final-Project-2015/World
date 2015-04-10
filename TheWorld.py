@@ -78,23 +78,29 @@ class Location(object):
 
     
 class World(object):
-    def __init__(self, currentLocation):
+    
+    def __init__(self):
         self.map = [Location() for i in range(36)] # initializes a list of locations, [Location 1, L2, L3, etc..]
-        self.currentLocation = currentLocation
+        #self.currentLocation = currentLocation
+        
         self.__createDungeon()
-        # Create a city if none was already made.
-        self.__createCity() 
+        self.__createCity() # Create a city if none was already made.
+        
         while self.map[0].BIOME == 2: #So you can't spawn on water
             self.BIOME = lsForBiomes.selectBiome(self) # Assign this instance of location's biome
             self.DESCRIP = lsForBiomes.selectDescrip(self, self.BIOME)
+
         #for i in range(len(self.map)):
             #print(self.map[i]) #PRINT ALL BIOMES
 
     def __createDungeon(self): # Create the dungeon by replacing a random sqaure
         dungeonLs = lsForBiomes.dungeonLs
-        dungeonIndex = random.randint(1,35)
-        self.map[dungeonIndex].BIOME = 9
-        self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
+        for i in range(random.randint(1,3)):
+            dungeonIndex = random.randint(1,35)
+            while self.map[dungeonIndex].BIOME == 1: # So it doesn't replace a city
+                dungeonIndex = random.randint(1,35)
+            self.map[dungeonIndex].BIOME = 9
+            self.map[dungeonIndex].DESCRIP = random.choice(dungeonLs)
         
     def __createCity(self): # Same as Create dungeon
         count = 0
@@ -103,11 +109,11 @@ class World(object):
                 count += 1
         CityLs = lsForBiomes.urbanLs
         cityIndex = random.randint(1,35)
-        if count == 0:
+        if count <= 1:
             while self.map[cityIndex].BIOME == 9: # So it doesn't replace a dungeon
                 cityIndex = random.randint(1,35)
-        self.map[cityIndex].BIOME = 1
-        self.map[cityIndex].DESCRIP = random.choice(CityLs)
+            self.map[cityIndex].BIOME = 1
+            self.map[cityIndex].DESCRIP = random.choice(CityLs)
 
     def movePlayerN(self, currentLocation): # Move player (N)orth
         if (currentLocation - 6) < 0: # Check to move up
@@ -155,12 +161,14 @@ class World(object):
         string += "\n********************************\n"
         return string
     
-    def returnBiome(self, currentLocation):
+    def returnBiome(self, currentLocation): # Returns an integer of the biome type the player is CURRENTLY in.
         return self.map[currentLocation.BIOME]
 
 #Main
 currentLocation = 0 # you will need this for the world to function
-world = World(currentLocation)# If your making your own main you will need to remove this
+world = World()# If your making your own main you will need to remove this
+
+
 
 
 ############# Simple UI ##############
