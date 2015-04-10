@@ -4,12 +4,13 @@ import random
 
 
 class dunWorld(object):
-    def __init__(self, currentLocation):
-        dungeonFile = open("dungeon1", "r")
-        self.currentLocation = currentLocation
+    def __init__(self):
+        dungeonLs = ['dungeon1.txt', 'dungeon2.txt']
+        dungeonTxt = random.choice(dungeonLs)
+        self.dungeonFile = open(dungeonTxt, "r")
         self.dungeon = [dungeonLocation() for i in range(36)]
         for i in range(len(self.dungeon)):
-            form = dungeonFile.readline()
+            form = self.dungeonFile.readline()
             form = form.strip()
             form = form.split(',')
             self.dungeon[i].dungeonForm = form
@@ -20,9 +21,15 @@ class dunWorld(object):
                     self.dungeon[i].final = True
             except IndexError:
                 pass
-        dungeonFile.close()
-        self.__makeDoors()
         
+        self.spawnLocation = self.dungeonFile.readline() # Reads last line for spawn point location
+        self.spawnLocation = self.spawnLocation.strip()
+        self.spawnLocation = int(self.spawnLocation)
+        
+        self.dungeonFile.close()
+        self.__makeDoors() #Chooses which rooms will have doors 
+
+
 ##############################################################
         
     def possibleMoves(self, currentLocation):
@@ -91,7 +98,7 @@ class dunWorld(object):
             else:
                 roomAtrib.append(0)
         else:
-            print("ERROR CURRENT LOCATION NOT A ROOM")
+            print("\nERROR CURRENT LOCATION NOT A ROOM\n")
             
         return roomAtrib
     def unlockDoor(self, currentLocation): #To unlock a door at your current position
@@ -99,7 +106,7 @@ class dunWorld(object):
             if self.dungeon[currentLocation].locked == True:
                 self.dungeon[currentLocation].locked = False
         else:
-            print('ERROR NO DOOR PRESENT OR DOOR IS ALREADY UNLOCKED')
+            print('\nERROR NO DOOR PRESENT OR DOOR IS ALREADY UNLOCKED\n')
         
                         
     
@@ -141,13 +148,15 @@ class dungeonLocation(object):
 #Main
 def launchDungeon():
     print('You are in an eerie dungeon...')
-    currentLocation = 0
-    dungeonWorld = dunWorld(currentLocation)
+ 
+    dungeonWorld = dunWorld()
+    currentLocation = dungeonWorld.spawnLocation #This will change your location to the spawn point on the map
     
     ################# Simple UI ##################
     inDungeon = True
     moveWhere = None
     while inDungeon == True:
+        
         if moveWhere == 'n':
             currentLocation = dungeonWorld.MovePlayerN(currentLocation)
         elif moveWhere == 'e':
@@ -156,15 +165,27 @@ def launchDungeon():
             currentLocation = dungeonWorld.MovePlayerS(currentLocation)
         elif moveWhere == 'w':
             currentLocation = dungeonWorld.MovePlayerW(currentLocation)
+        elif moveWhere == 'return':
+            doorCheck = dungeonWorld.returnDoor(currentLocation)
+            if doorCheck:
+                if doorCheck[0] == 1:
+                    print('\nTheres a door here.')
+                    if doorCheck[1] == 1:
+                        print('It is locked also.\n')
+            else:
+                print('There is no door here')
+        elif moveWhere == 'u':
+            dungeonWorld.unlockDoor(currentLocation)
         #elif moveWhere == 'q': Un-comment this to add a quit function that'll take you out of the dungeon
             #print('Goodbye')   and straight back where you were in the world
             #inDungeon = False
             #break
+            
         elif moveWhere == None:
             pass
         else:
             print('Unknown Command')
-        #print('You are on sqaure', currentLocation)
+    
         if dungeonWorld.dungeon[currentLocation].final == True:
             print('You are in the exit square!')
             decide = input('Would you like to leave the dungeon:')
@@ -172,8 +193,11 @@ def launchDungeon():
                 currentLocation = random.randrange(35)
                 inDungeon = False
                 return currentLocation
+        
         print(dungeonWorld.possibleMoves(currentLocation))
-        #print(dungeonWorld.dungeon[currentLocation]) Uncomment this to enable debug
+        
+        #print(dungeonWorld.dungeon[currentLocation]) #Uncomment this to enable debug
+        
         moveWhere = input('Where would you like to move: ')
 
 
