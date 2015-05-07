@@ -89,10 +89,15 @@ class World(object):
         while self.map[0].BIOME == 2: #So you can't spawn on water
             self.BIOME = lsForBiomes.selectBiome(self) # Assign this instance of location's biome
             self.DESCRIP = lsForBiomes.selectDescrip(self, self.BIOME)
-
-        #for i in range(len(self.map)):
-            #print(self.map[i]) #PRINT ALL BIOMES
-
+            
+        self.__generateWorld()
+        
+    def __generateWorld(self):
+        worldFile = open("world.txt", "w")
+        for i in range(36):
+            worldFile.write(str(self.map[i].BIOME)+ " " + self.map[i].biomeDic[self.map[i].BIOME] + "\n")
+        worldFile.close()
+        
     def __createDungeon(self): # Create the dungeon by replacing a random sqaure
         dungeonLs = lsForBiomes.dungeonLs
         for i in range(random.randint(1,3)):
